@@ -92,7 +92,7 @@ end
 Now all we need to do is pass `MyCustomSlide.new` to our runner as a slide to consider in the rotation and we're done! We can customise the SVG file or the background image, adjust the text we're dynamically adding in our slide class, or add new dynamic elements through the same mechanism. The only limit is the lengths to which you're willing to figure out how to do things with SVG.
 
 
-Loads more information on how to make your own custom slides can be found in the [RDoc documentation](http://rubydoc.info/gems/radiovis-generator/) or by simply reading the `slide.rb` file.
+Loads more information on how to make your own custom slides can be found in the [RDoc documentation](http://rubydoc.info/gems/radiovis-generator/RadioVISGenerator/Slide) or by simply reading the `slide.rb` file.
 
 
 ## Credits and Acknowledgements
