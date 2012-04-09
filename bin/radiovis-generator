@@ -1,0 +1,18 @@
+#!/usr/bin/env ruby
+require 'rubygems'
+require 'radiovis-generator'
+require 'trollop'
+opts = Trollop::options do
+  opt :url, "Base Image URL", type: String, default: 'http://localhost/radiovis/'
+  opt :path, "Base Image Path", type: String, default: '/tmp/radiovis-output'
+  opt :broadcast_parameters, "Broadcast Parameters", type: String
+  opt :username, "Stomp username", type: String, default: 'system'
+  opt :password, "Stomp password", type: String, default: 'manager'
+  opt :host, "Stomp host", type: String, default: 'localhost'
+  opt :port, "Stomp port", type: :int, default: 61613
+end
+gen = RadioVISGenerator::Generator.new
+options = {
+  slides: [RadioVISGenerator::BrandingSlide.new, RadioVISGenerator::NowPlayingSlide.new]
+}.merge(opts)
+gen.run(options)

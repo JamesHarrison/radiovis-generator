@@ -2,7 +2,7 @@ require 'fileutils'
 class RadioVISGenerator::Slide
   # Generate the substitution hash to process on this run. This is where we add our dynamic content!
   # Returns a hash where "$$TARGET$$" => "Content", where $$TARGET$$ is the target string to replace in the SVG and Content is the substitute.
-  # This is passed to Slide.rewrite_svg
+  # This is passed to RadioVISGenerator::Slide.rewrite_svg
   def generate
     return {}
   end
@@ -63,7 +63,7 @@ class RadioVISGenerator::Slide
   # Have we gotten bored enough to just show this again, assuming it's not been too little time
   # (as defined in Slide#redisplay_delay)
   def redisplay?
-    if @last_render_time < Time.now - 15.seconds
+    if @last_render_time < Time.now - 15
       return true
     end
     return false
@@ -80,16 +80,16 @@ class RadioVISGenerator::Slide
     # Make sure our output path exists
     FileUtils.mkdir_p(output_path) rescue nil
     Dir.mkdir('/tmp/radiovis-generator') rescue nil # Make our temporary storage
-    Slide.rewrite_svg(svg_filename, "/tmp/#{self.name}.svg", self.generate)
+    RadioVISGenerator::Slide.rewrite_svg(svg_filename, "/tmp/#{self.name}.svg", self.generate)
     if background_image
-      Slide.render_svg("/tmp/#{self.name}.svg", "/tmp/#{self.name}-precomp.png")
-      Slide.composite("/tmp/#{self.name}-precomp.png", background_image, File.join(output_path, "#{self.name}-640x480.png"))
+      RadioVISGenerator::Slide.render_svg("/tmp/#{self.name}.svg", "/tmp/#{self.name}-precomp.png")
+      RadioVISGenerator::Slide.composite("/tmp/#{self.name}-precomp.png", background_image, File.join(output_path, "#{self.name}-640x480.png"))
     else
-      Slide.render_svg("/tmp/#{self.name}.svg", File.join(output_path, "#{self.name}-640x480.png"))
+      RadioVISGenerator::Slide.render_svg("/tmp/#{self.name}.svg", File.join(output_path, "#{self.name}-640x480.png"))
     end
     FileUtils.rm_rf('/tmp/radiovis-generator') rescue nil # Clean up after ourselves
     # Make our smaller-res version
-    Slide.resize_to_fit(File.join(output_path, "#{self.name}-640x480.png"), File.join(output_path, "#{self.name}-320x240.png"), '320x240')
+    RadioVISGenerator::Slide.resize_to_fit(File.join(output_path, "#{self.name}-640x480.png"), File.join(output_path, "#{self.name}-320x240.png"), '320x240')
     return {
       image_big: "#{self.name}-640x480.png",
       image_small: "#{self.name}-320x240.png",
@@ -101,7 +101,7 @@ class RadioVISGenerator::Slide
 
   # Returns the name of this slide as a friendlyish string to be used in output image names.
   def name
-    self.class.to_s.downcase
+    self.class.to_s.downcase.gsub("radiovisgenerator::","")
   end
 
   # Rewrites an SVG at a given input path with the information in the given hash to the given output path.

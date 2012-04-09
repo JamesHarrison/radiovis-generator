@@ -27,6 +27,9 @@ RadioVIS Generator is tested on Linux. Other operating systems are supported in 
 Installing is simple. Install the dependencies (on Ubuntu, that's `sudo apt-get install imagemagick inkscape` - add `ruby1.9-full` if you're missing Ruby), and then simply install the gem with `gem install radiovis-generator`. Congratulations, you're good to go!
 
 
+You can test the installation out by using the simple command line program bundled with the generator - see `radiovis-generator --help` for options. This will cycle between the slides provided by the gem, and is intended as a really simple starting point for your own runner.
+
+
 ### Simple Usage
 
 RadioVIS Generator comes bundled with a couple of basic templates - one which shows two pieces of information (intended for Now Playing slides), and one which shows just a large title. These will get you off the ground, or at least show you how to customise your slides.
@@ -39,9 +42,9 @@ require 'radiovis-generator'
 gen = RadioVISGenerator::Generator.new
 options = {
   slides: [RadioVISGenerator::BrandingSlide.new, RadioVISGenerator::NowPlayingSlide.new],
-  image_base_url: 'http://localhost/radiovis/', # The path on your web server pointing at..
-  image_base_path: '/tmp/radiovis-output'       # This path on your filesystem!
-  broadcast_parameters: 'fm/ecc/pi/freq',       # See the RadioVIS spec for how to generate this.
+  url: 'http://localhost/radiovis/', # The path on your web server pointing at..
+  path: '/tmp/radiovis-output'       # This path on your filesystem!
+  broadcast_parameters: 'fm/ecc/pi/freq', # See the RadioVIS spec for how to generate this.
   username: 'system',   # These details are for your Stomp broker.
   password: 'manager',
   host: 'localhost',

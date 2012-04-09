@@ -21,6 +21,6 @@ class RadioVISGenerator::BrandingSlide < RadioVISGenerator::Slide
   end
   # Specify our filename - this is messy because it's relative to the gem.
   def svg_filename
-    return "#{File.expand_path(File.dirname(File.dirname(File.dirname(__FILE__))))}/templates/branding-slide.svg"
+    return "#{File.expand_path(File.dirname(File.dirname(File.dirname(File.dirname(__FILE__)))))}/templates/branding-slide.svg"
   end
 end
