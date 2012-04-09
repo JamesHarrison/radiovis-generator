@@ -43,12 +43,12 @@ gen = RadioVISGenerator::Generator.new
 options = {
   slides: [RadioVISGenerator::BrandingSlide.new, RadioVISGenerator::NowPlayingSlide.new],
   url: 'http://localhost/radiovis/', # The path on your web server pointing at..
-  path: '/tmp/radiovis-output'       # This path on your filesystem!
+  path: '/tmp/radiovis-output',       # This path on your filesystem!
   broadcast_parameters: 'fm/ecc/pi/freq', # See the RadioVIS spec for how to generate this.
   username: 'system',   # These details are for your Stomp broker.
   password: 'manager',
   host: 'localhost',
-  port: 61313
+  port: 61613
 }
 gen.run(options)
 ```

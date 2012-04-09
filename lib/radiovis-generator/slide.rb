@@ -35,7 +35,7 @@ class RadioVISGenerator::Slide
 
   # How long should we wait between redisplays if we've got nothing better to do (ie no content changed)?
   def redisplay_delay
-    return 15
+    return 23
   end
 
   # What image makes the background of this slide, and should be composited over it?

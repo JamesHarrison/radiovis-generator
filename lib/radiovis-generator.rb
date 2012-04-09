@@ -27,7 +27,7 @@ module RadioVISGenerator
         username: 'system',
         password: 'manager',
         host: 'localhost',
-        port: 61313
+        port: 61613
       }
       options = defaults.merge(options)
       raise ArgumentsError, "No slide instances provided!" unless options[:slides].size > 0
@@ -61,7 +61,7 @@ module RadioVISGenerator
             image_topic = "/topic/#{options[:broadcast_parameters]}/image"
             text_topic  = "/topic/#{options[:broadcast_parameters]}/text"
             image_message = "SHOW "+options[:url]+slide_output[:image_small]
-            text_message  = "TEXT "+slide_output[:text]
+            text_message  = "TEXT "+slide_output[:text][0..127]
             puts "Publishing Stomp messages"
             puts " - #{image_topic} <= #{image_message}"
             puts " - #{text_topic} <= #{text_message}"
@@ -75,12 +75,12 @@ module RadioVISGenerator
             sleep 1
           end
         end
-      #rescue Exception => e
-      #  puts "Got exception #{e}!"
-      #  conn.disconnect rescue nil
-      #  conn = nil
-      #  sleep 5
-      #  retry
+      rescue Exception => e
+        puts "Got exception #{e}!"
+        conn.disconnect rescue nil
+        conn = nil
+        sleep 5
+        retry
       end
     end
 
