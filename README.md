@@ -16,9 +16,11 @@ Simply put (though if you want the spec, [it's here](http://radiodns.org/documen
 
 RadioVIS Generator depends on Inkscape (which does not require a GUI) and the ImageMagick project (the 'convert' and 'composite' binaries).
 
-Aside from those two tools, Ruby is required, along with RubyGems. Recent versions are recommended.
+Aside from those two tools, Ruby is required, along with RubyGems. Recent versions are recommended - 1.9 or greater. There's a couple of gem dependencies (stomp and trollop).
 
-You'll also need a Stomp broker, though this can be on another system. You'll probably need a web server like nginx or Apache on your system, though.
+You'll also need a Stomp broker, though this can be on another system. A service like Apache ActiveMQ (for which an example configuration for RadioVIS is included) or Apache Apollo will work perfectly for this purpose.
+
+The generator will write images to any given path, but you'll need to be able to serve these images up over HTTP, so you'll need a webserver like nginx (recommended) or Apache set up and configured.
 
 RadioVIS Generator is tested on Linux. Other operating systems are supported in principle, but not tested.
 
@@ -28,6 +30,12 @@ Installing is simple. Install the dependencies (on Ubuntu, that's `sudo apt-get 
 
 
 You can test the installation out by using the simple command line program bundled with the generator - see `radiovis-generator --help` for options. This will cycle between the slides provided by the gem, and is intended as a really simple starting point for your own runner.
+
+For example, to serve up some images locally for testing, you might run something like this:
+
+```
+radiovis-generator -a "stomp-password" -b "fm/ce1/c08f/10320" -p "/home/james/radiovis/" -u "http://localhost/"
+```
 
 
 ### Simple Usage
@@ -84,7 +92,7 @@ end
 Now all we need to do is pass `MyCustomSlide.new` to our runner as a slide to consider in the rotation and we're done! We can customise the SVG file or the background image, adjust the text we're dynamically adding in our slide class, or add new dynamic elements through the same mechanism. The only limit is the lengths to which you're willing to figure out how to do things with SVG.
 
 
-Loads more information on how to make your own custom slides can be found in the RDoc documentation or by simply reading the `slide.rb` file.
+Loads more information on how to make your own custom slides can be found in the [RDoc documentation](http://rubydoc.info/gems/radiovis-generator/) or by simply reading the `slide.rb` file.
 
 
 ## Credits and Acknowledgements

@@ -1,0 +1,140 @@
+<!-- Based off the ActiveMQ distribution example configuration file -->
+<beans
+  xmlns="http://www.springframework.org/schema/beans"
+  xmlns:amq="http://activemq.apache.org/schema/core"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+  http://activemq.apache.org/schema/core http://activemq.apache.org/schema/core/activemq-core.xsd">
+
+    <!-- Allows us to use system properties as variables in this configuration file -->
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <value>file:${activemq.base}/conf/credentials.properties</value>
+        </property>
+    </bean>
+    <!--
+        The <broker> element is used to configure the ActiveMQ broker.
+
+        Note for RadioVIS we've disabled persistency entirely for this broker.
+    -->
+    <broker xmlns="http://activemq.apache.org/schema/core" brokerName="localhost" dataDirectory="${activemq.base}/data" destroyApplicationContextOnStop="true" persistent="false">
+
+        <!--
+            Don't do much here except for disabling producer flow control (because
+            we're trying to do mass distribution, not reliable messaging) and setting
+            our slow consumer strategy to drop slow clients.
+
+            We also up the memory limit and enable the VM cursor. Since we're sending
+            non-persistent messages, these limits are used.
+        -->
+        <destinationPolicy>
+            <policyMap>
+              <policyEntries>
+                <policyEntry topic=">" producerFlowControl="false" memoryLimit="16mb">
+                  <pendingSubscriberPolicy>
+                    <vmCursor />
+                  </pendingSubscriberPolicy>
+                  <slowConsumerStrategy>
+                    <abortSlowConsumerStrategy/>
+                  </slowConsumerStrategy>
+                </policyEntry>
+                <policyEntry queue=">" producerFlowControl="false" memoryLimit="16mb">
+                </policyEntry>
+              </policyEntries>
+            </policyMap>
+        </destinationPolicy>
+
+
+
+        <!--
+            The managementContext is used to configure how ActiveMQ is exposed in
+            JMX. By default, ActiveMQ uses the MBean server that is started by
+            the JVM. For more information, see:
+
+            http://activemq.apache.org/jmx.html
+        -->
+        <managementContext>
+            <managementContext createConnector="false"/>
+        </managementContext>
+        <!--
+            Set up a few plugins
+        -->
+        <plugins>
+            <!--
+                This plugin handles what authenticated users can do - by default, 
+                anyone can read, only admins can write. Advisory topics can be 
+                written to and managed by guests, of course.
+            -->
+            <authorizationPlugin>
+                <map>
+                    <authorizationMap>
+                        <authorizationEntries>
+                            <authorizationEntry queue=">" read="guests,admins" write="admins" admin="admins" />
+                            <authorizationEntry topic=">" read="guests,admins" write="admins" admin="admins" />
+                            <authorizationEntry topic="ActiveMQ.Advisory.>" read="guests,users,admins" write="guests,users,admins" admin="guests,users,admins"/>
+                        </authorizationEntries>
+                    </authorizationMap>
+                </map>
+              </authorizationPlugin>
+            <!--
+                This plugin handles our RadioVIS usage of / in topic names as opposed to .
+            -->
+            <destinationPathSeparatorPlugin/>
+            <!--
+                And finally we need to authenticate who gets let in! We permit anonymous access 
+                (mapped to guest/guests) and set up a system account for our RadioVIS connector.
+            -->
+            <simpleAuthenticationPlugin anonymousAccessAllowed="true" anonymousUser="guest" anonymousGroup="guests">
+                <users>
+                    <authenticationUser username="system" password="someverysecretpasswordchangeme" groups="admins"/>
+                    <authenticationUser username="guest" password="guest" groups="guests"/>
+                </users>
+            </simpleAuthenticationPlugin>
+
+        </plugins>
+
+        <!--
+            Since we're not using PFC (see our destinationPolicy block) and using 
+            non-persistent messages, these limits are not all relevant to most
+            RadioVIS operations.
+
+            See http://activemq.apache.org/producer-flow-control.html for more info.
+        -->
+        <systemUsage>
+            <systemUsage>
+                <memoryUsage>
+                    <memoryUsage limit="64 mb"/>
+                </memoryUsage>
+                <storeUsage>
+                    <storeUsage limit="1 gb"/>
+                </storeUsage>
+                <tempUsage>
+                    <tempUsage limit="128 mb"/>
+                </tempUsage>
+            </systemUsage>
+        </systemUsage>
+
+        <!--
+            The transport connectors expose ActiveMQ over a given protocol to
+            clients and other brokers. For more information, see:
+
+            http://activemq.apache.org/configuring-transports.html
+
+            We enable Stomp (using the New I/O version in ActiveMQ) and WebSockets.
+        -->
+        <transportConnectors>
+            <transportConnector name="stomp+nio" uri="stomp+nio://0.0.0.0:61613?transport.closeAsync=false"/>
+            <transportConnector name="websocket" uri="ws://0.0.0.0:61623"/>
+        </transportConnectors>
+
+    </broker>
+
+    <!--
+        Enable web consoles, REST and Ajax APIs and demos
+
+        Look at http://this-host:8161/admin for the web console.
+        Comment this out if you're not using it.
+    -->
+    <import resource="jetty.xml"/>
+
+</beans>
