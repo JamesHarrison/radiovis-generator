@@ -101,7 +101,7 @@ class RadioVISGenerator::Slide
 
   # Returns the name of this slide as a friendlyish string to be used in output image names.
   def name
-    self.class.to_s.downcase.gsub("radiovisgenerator::","")
+    self.class.to_s.downcase.gsub("radiovisgenerator::","").gsub("slide","")
   end
 
   # Rewrites an SVG at a given input path with the information in the given hash to the given output path.
