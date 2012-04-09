@@ -1,4 +1,13 @@
-<!-- Based off the ActiveMQ distribution example configuration file -->
+<!-- 
+    This file is an example configuration file for Apache ActiveMQ 5.6 or greater.
+    It is intended for users of the RadioVIS/RadioDNS system.
+
+    Note that 5.5 features a bug which prevents it from working properly with forward-slash destinations.
+    Therefore, use the 5.6 stable (when it comes out) or snapshots.
+
+    Based off the ActiveMQ distribution example configuration file
+
+-->
 <beans
   xmlns="http://www.springframework.org/schema/beans"
   xmlns:amq="http://activemq.apache.org/schema/core"
