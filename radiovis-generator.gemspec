@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'radiovis-generator'
-  s.version     = '1.0.1'
+  s.version     = '1.1.0'
   s.date        = '2012-04-09'
   s.summary     = "A RadioVIS slide generator"
   s.description = "An extendable gem to generate slide images and text for RadioVIS systems and publish them in an intelligent rotation"
